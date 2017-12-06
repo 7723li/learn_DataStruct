@@ -19,7 +19,10 @@ List Delete(List PtrL,int i);
 
 int main(int argc, char const *argv[])
 {
-	List L;
+	List L;L=(List)malloc(sizeof(struct LNode));
+	int length;
+	length = Length(L);
+	printf("%d\n", length);
 	return 0;
 }
 
@@ -27,6 +30,7 @@ int Length(List PtrL){
 	List p=PtrL;// p指向表的第一个结点
 	int j = 0;
 	while(p){
+		printf("%p\n", p);
 		p = p->Next;
 		j++;// 当前p指向的是第j个结点
 	}
