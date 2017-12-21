@@ -1,3 +1,5 @@
+// 搜索二叉树的插入与删除
+
 BinTree Insert( BinTree BST, ElementType X )
 {
     if( !BST ){ /* 若原树为空，生成并返回一个结点的二叉搜索树 */

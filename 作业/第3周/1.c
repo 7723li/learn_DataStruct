@@ -1,4 +1,5 @@
-#include<stdio.h>
+// 树的同构
+#include <stdio.h>
 #define MaxTree 10
 #define Null -1     //将Null定义为-1而不能是0，因为数组下标为0的地方仍保存有节点
 typedef char ElementType;
