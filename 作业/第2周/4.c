@@ -30,14 +30,14 @@ int main(int argc, char const *argv[])
 
 	List p3 = Reverse(p2,N,k);
 
-	l = (List*)malloc(sizeof(List)*N); i=0;printf("\n");
+	l = (List*)malloc(sizeof(List)*N); i=0;/*printf("\n");*/
 	while(p2){ 
 		l[i]=p2; 
-		printf("%05d %d %d\n", l[i]->add,l[i]->Data,l[i]->next_add);
+		// printf("%05d %d %d\n", l[i]->add,l[i]->Data,l[i]->next_add);
 		i++; free(l[i]); p2 = p2->Next;
 	} free(l);
 
-	l = (List*)malloc(sizeof(List)*N); i=0;printf("\n");
+	l = (List*)malloc(sizeof(List)*N); i=0;/*printf("\n");*/
 	while(p3){ 
 		l[i]=p3; 
 		printf("%05d %d %d\n", l[i]->add,l[i]->Data,l[i]->next_add);
@@ -78,8 +78,8 @@ List Sort(List p,int firstAdd,int length){
 			tail = mid;
 			break; 
 		}
-		else p1 = p1 -> Next;}
-
+		else p1 = p1 -> Next;
+	}
 	
 	for(int i=0;i<length-1;i++){
 		p1 = p;
