@@ -1,159 +1,71 @@
 // Complete Binary Search Tree
-// 基本思路是用平衡二叉树的方法解决
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef struct CBTNode *CBTTree;
-struct CBTNode
-{
-	int val;
-	CBTTree left;
-	CBTTree right;
-	int height;
-};
-int MAX(int,int);
-int getHeight(CBTTree T);
-CBTTree LLRotation(CBTTree k2);
-CBTTree RRRotation(CBTTree k1);
-CBTTree RLRotation(CBTTree k1);
-CBTTree LRRotation(CBTTree k2);
-CBTTree CreateNode(int val, CBTTree left, CBTTree right);
-CBTTree Insert(CBTTree T,int val);
-void LevelTraversal(CBTTree T, int nums);
-
-void FroneTravel(CBTTree T){
-	if(T != NULL){
-		printf("%d ", T -> val);
-		FroneTravel(T -> left);
-		FroneTravel(T -> right);
-	}
+int pow(int a,int b){
+	int c = 1;
+	if(b==0) return 1;
+	while(b--) c *= a;
+	return c;
 }
 
-void InorderTravel(CBTTree T){
-	if(T != NULL){
-		InorderTravel(T -> left);
-		printf("%d ", T -> val);
-		InorderTravel(T -> right);
-	}
+void move(int* c,int i,int j){ 
+// 将i移动至j,i前j后,将(i,j]之间的前移
+	int temp = c[i],k;
+	for(k=i; k<j; k++) c[k] = c[k+1];
+	c[j] = temp;
 }
 
 int main(int argc, char const *argv[])
 {
-	int i;
-	int NodeNum, val;
-	CBTTree Tree = NULL;
+	int i, j, temp;
+	int nums, *TreeNodes;
+	//树的高度，枝干,底层叶节点
+	int height = 0, branches = 0, leaves;
+	int times, pos;
 
-	scanf("%d",&NodeNum);
-	for(i=0; i<NodeNum; i++){
-		scanf("%d", &val);
-		Tree = Insert(Tree, val);
+	scanf("%d", &nums);
+	TreeNodes = (int*) malloc (sizeof(int) * nums);
+	for(i=0; i<nums; i++) scanf("%d", &TreeNodes[i]);
+
+	for(i=0; i<nums-1; i++){ // 大小排序
+		for(j=i+1; j<nums; j++){
+			if(TreeNodes[i] > TreeNodes[j]){
+				temp = TreeNodes[i];
+				TreeNodes[i] = TreeNodes[j];
+				TreeNodes[j] = temp;
+			}
+		}
 	}
-	FroneTravel(Tree); printf("\n");
-	InorderTravel(Tree); printf("\n");
-	// LevelTraversal(Tree,NodeNum);
+
+	while(true)
+		if(branches > 0 && nums/branches == 1) break;
+		else branches += pow(2,height++);
 	
+	leaves = nums - branches;
+	for(i=0; i<leaves; i++){ // 叶节点排序
+		move(TreeNodes,i,nums-1);
+	}
+
+	// 具体操作思路看3.2 3.3图片
+	for(height; height>0; height--){ 
+		times = pow(2,(height-1)); 
+		pos = pow(2,height) - 2;
+		for(i=0; i<times; i++){
+			move(TreeNodes, i, pos);
+		}
+	}
+
+	for(i=0; i<nums-1; i++){
+		printf("%d ", TreeNodes[i]);
+	}
+	printf("%d\n", TreeNodes[nums-1]);
+
 	return 0;
 }
 
-int MAX(int a,int b){
-	return a > b ? a : b;
-}
-
-int getHeight(CBTTree T){
-	return T == NULL ? -1 : T -> height;
-}
-
-CBTTree LLRotation(CBTTree k2){
-	CBTTree k1;
-
-	k1 = k2 -> left;
-	k2 -> left = k1 -> right;
-	k1 -> right = k2;
-
-	k2 -> height = 
-		MAX(getHeight(k2 -> left), getHeight(k2 -> right)) + 1;
-	k1 -> height = 
-		MAX(getHeight(k1 -> left), k1 -> height) + 1;
-
-	return k1;
-}
-
-CBTTree RRRotation(CBTTree k1){
-	CBTTree k2;
-
-	k2 = k1 -> right;
-	k1 -> right = k2 -> left;
-	k2 -> left = k1;
-
-	k1 -> height = 
-		MAX(getHeight(k1 -> left), getHeight(k1 -> right)) + 1;
-	k2 -> height = 
-		MAX(getHeight(k2 -> left), k2 -> height) + 1;
-
-	return k1;
-}
-
-CBTTree RLRotation(CBTTree k1){
-	k1 -> right = LLRotation(k1 -> right);
-	return RRRotation(k1);
-}
-
-CBTTree LRRotation(CBTTree k2){
-	k2 -> left = RRRotation(k2 -> left);
-	return LLRotation(k2);
-}
-
-CBTTree CreateNode(int val, CBTTree left, CBTTree right){
-	CBTTree T = (CBTTree) malloc (sizeof(struct CBTNode));
-	T -> val = val;
-	T -> left = left;
-	T -> right = right;
-	T -> height = 0;
-	return T;
-}
-
-CBTTree Insert(CBTTree T,int val){
-	if(T == NULL) T = CreateNode(val,NULL,NULL);
-
-	else if(val < T -> val){
-		T -> left = Insert(T -> left, val);
-		if(getHeight(T -> left) - getHeight(T -> right) == 2){
-			if(val < T -> left -> val){
-				T = LLRotation(T);
-			}
-			else{
-				T = LRRotation(T);
-			}
-		}
-	}
-
-	else if(val > T -> val){
-		T -> right = Insert(T -> right, val);
-		if(getHeight(T -> right) - getHeight(T -> left) == 2){
-			if(val > T -> right -> val){
-				T = RRRotation(T);
-			}
-			else{
-				T = RLRotation(T);
-			}
-		}
-	}
-	else return NULL;
-
-	T -> height = 
-		MAX(getHeight(T -> left), getHeight(T -> right));
-	return T;
-}
-
-void LevelTraversal(CBTTree T, int nums){// 层序遍历
-	CBTTree queue[nums], temp;
-	int i, head = 0, tail = 0; // 队列指针
-
-	queue[tail++] = T;
-	for(i=1; i<nums; i++){
-		temp = queue[head++];
-		printf("%d\n", temp -> val);
-		queue[tail++] = temp -> left;
-		queue[tail++] = temp -> right;
-	}
-}
+// 10
+// 1 2 3 4 5 6 7 8 9 0
+// 21
+// 20 19 18 17 16 15 14 13 12 
+// 11 10 9 8 7 6 5 4 3 2 1 0
