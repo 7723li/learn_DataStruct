@@ -43,9 +43,9 @@ bool Insert( MaxHeap H, ElementType X )
         printf("最大堆已满");
         return false;
     }
-    i = ++H->Size; /* i指向插入后堆中的最后一个元素的位置 */
+    i = ++(H->Size); /* i指向插入后堆中的最后一个元素的位置 */
     for ( ; H->Data[i/2] < X; i/=2 )
-        H->Data[i] = H->Data[i/2]; /* 上滤X */
+        H->Data[i] = H->Data[i/2]; /* 上滤X, 参考教材pdf */
     H->Data[i] = X; /* 将X插入 */
     return true;
 }
@@ -70,7 +70,7 @@ ElementType DeleteMax( MaxHeap H )
     MaxItem = H->Data[1]; /* 取出根结点存放的最大值 */
     /* 用最大堆中最后一个元素从根结点开始向上过滤下层结点 */
     X = H->Data[H->Size--]; /* 注意当前堆的规模要减小 */
-    for( Parent=1; Parent*2<=H->Size; Parent=Child ) {
+    for( Parent=1; Parent*2 <= H->Size; Parent=Child ) {
         Child = Parent * 2;
         if( (Child!=H->Size) && (H->Data[Child]<H->Data[Child+1]) )
             Child++;  /* Child指向左右子结点的较大者 */
@@ -115,6 +115,8 @@ void BuildHeap( MaxHeap H )
 int main(int argc, char const *argv[])
 {
 	MaxHeap H = CreateHeap(10);
+    // 此处需要输入最大堆H的数组Data的各个值
+    BuildHeap(H);
 
 	return 0;
 }
